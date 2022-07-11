@@ -147,6 +147,9 @@
                 "services": {
                     "type": "boolean"
                 },
+                "route": {
+                    "type": "boolean"
+                },
                 "stp": {
                     "type": "boolean"
                 },
@@ -276,6 +279,9 @@
                 "ucd-diskio": {
                     "type": "boolean"
                 },
+                "ucd-dsktable": {
+                    "type": "boolean"
+                },
                 "services": {
                     "type": "boolean"
                 },
@@ -367,6 +373,9 @@
             "type": "object",
             "properties": {
                 "no_bulk": {
+                    "type": "array"
+                },
+                "unordered": {
                     "type": "array"
                 }
             },
