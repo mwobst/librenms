@@ -362,5 +362,7 @@
     "Pollers": "Poller",
     "Groups": "Gruppen",
     "Performance": "Performance",
-    "History": "Geschichte"
+    "History": "Historie",
+    "Display Name": "Anzeigename",
+    "Display Text": "Anzeigewert"
 }
