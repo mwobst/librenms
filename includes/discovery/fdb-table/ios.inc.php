@@ -9,7 +9,7 @@ foreach ($vtpdomains as $vtpdomain_id => $vtpdomain) {
     echo "VTP Domain $vtpdomain_id {$vtpdomain['managementDomainName']}> ";
     foreach ($vlans[$vtpdomain_id] as $vlan_raw => $vlan) {
         echo "$vlan_raw ";
-        if (! array_key_exists($vlan_raw, $vlans_dict)) {
+        if (! array_key_exists($vlan_raw, $vlans_dict) && $vlan_raw) {
             $newvlan_id = dbInsert([
                 'device_id' => $device['device_id'],
                 'vlan_domain' => $vtpdomain_id,
