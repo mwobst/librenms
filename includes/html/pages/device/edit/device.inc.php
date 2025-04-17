@@ -294,14 +294,14 @@ if (\LibreNMS\Config::get('distributed_poller') === true) {
 
     <div class="form-group">
       <label for="disable_notify" class="col-sm-2 control-label">Disable alerting</label>
-      <div class="col-sm-6">
-        <input id="disable_notify" type="checkbox" name="disable_notify" data-size="small"
+        <div class="col-sm-6">
+            <input id="disable_notify" type="checkbox" name="disable_notify" data-size="small"
                 <?php
                 if ($device_model->disable_notify) {
                     echo 'checked=checked';
                 }
                 ?> />
-      </div>
+        </div>
     </div>
     <div class="form-group">
         <label for="disable_alert_transport" class="col-sm-2 control-label">Disable alert transports</label>
