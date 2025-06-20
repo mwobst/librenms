@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use LibreNMS\Config;
+use LibreNMS\Enum\AlertScheduleBehavior;
 use LibreNMS\Interfaces\UI\DeviceTab;
 use LibreNMS\Util\Debug;
 use LibreNMS\Util\Graph;
@@ -93,6 +94,9 @@ class DeviceController extends Controller
         $title = $tab_controller->name();
         $data = $tab_controller->data($device, $request);
         $page_links = $data['page_links'] ?? [];
+
+        // Pass 'any' behaviour for scheduled behaviors
+        $maintenance_any_behaviour = AlertScheduleBehavior::ANY;
 
         // Device Link Menu, select the primary link
         $device_links = $this->deviceLinkMenu($device, $current_tab);

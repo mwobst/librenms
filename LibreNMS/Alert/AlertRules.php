@@ -36,6 +36,7 @@ use App\Models\Eventlog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\AlertScheduleBehavior;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\Severity;
 use PDO;
@@ -46,7 +47,7 @@ class AlertRules
     public function runRules($device_id)
     {
         //Check to see if under maintenance
-        if (AlertUtil::isMaintenance($device_id) > 0) {
+        if (AlertUtil::isMaintenance($device_id, AlertScheduleBehavior::SKIP_ALERT_RULE_CHECKS) > 0) {
             echo "Under Maintenance, skipping alert rules check.\r\n";
 
             return false;

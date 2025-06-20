@@ -14,6 +14,7 @@
 
 use App\Models\UserPref;
 use Illuminate\Support\Str;
+use LibreNMS\Enum\AlertScheduleBehavior;
 
 if (! Auth::user()->hasGlobalAdmin()) {
     header('Content-type: text/plain');
@@ -44,6 +45,7 @@ if ($sub_type == 'new-maintenance') {
     $start = $_POST['start'];
     [$duration_hour, $duration_min] = explode(':', $_POST['duration']);
     $end = $_POST['end'];
+    $behavior = $_POST['behavior'];
     $maps = $_POST['maps'];
 
     if (isset($duration_hour) && isset($duration_min)) {
@@ -111,6 +113,12 @@ if ($sub_type == 'new-maintenance') {
         $end_recurring_hr = '00:00:00';
     }
 
+    if (empty($_POST['behavior'])) {
+        $message .= 'Missing behavior<br />'.implode(' ::: ', array_keys($_POST));
+    } elseif (! AlertScheduleBehavior::in_allowed_values($behavior)) {
+        $message .= 'Invalid behavior<br />';
+    }
+
     if (! is_array($_POST['maps'])) {
         $message .= 'Not mapped to any groups or devices<br />';
     }
@@ -119,6 +127,7 @@ if ($sub_type == 'new-maintenance') {
         $alert_schedule = \App\Models\AlertSchedule::findOrNew($schedule_id);
         $alert_schedule->title = $title;
         $alert_schedule->notes = $notes;
+        $alert_schedule->behavior = $behavior;
         $alert_schedule->recurring = $recurring;
         $alert_schedule->start = $start;
         $alert_schedule->end = $end;

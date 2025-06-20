@@ -32,6 +32,7 @@ use App\Models\Eventlog;
 use LibreNMS\Config;
 use LibreNMS\Data\Source\Fping;
 use LibreNMS\Data\Source\FpingResponse;
+use LibreNMS\Enum\AlertScheduleBehavior;
 use LibreNMS\Enum\Severity;
 use SnmpQuery;
 use Symfony\Component\Process\Process;
@@ -171,7 +172,10 @@ class ConnectivityHelper
 
     private function updateAvailability(bool $previous, bool $status): void
     {
-        if (Config::get('graphing.availability_consider_maintenance') && $this->device->isUnderMaintenance()) {
+        if (
+            Config::get('graphing.availability_consider_maintenance')
+            && $this->device->isUnderMaintenance(AlertScheduleBehavior::SKIP_ALERT_RULE_CHECKS)
+        ) {
             return;
         }
 

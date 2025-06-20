@@ -24,6 +24,7 @@
  */
 
 use App\Facades\DeviceCache;
+use LibreNMS\Enum\AlertScheduleBehavior;
 
 if (! Auth::user()->hasGlobalAdmin()) {
     exit('ERROR: You need to be admin');
@@ -50,6 +51,10 @@ foreach ($hour_steps as $hour) {
         $maintenance_duration_list[] = $duration;
     }
 }
+
+$asb__skip = AlertScheduleBehavior::SKIP_ALERT_RULE_CHECKS;
+$asb__no_at = AlertScheduleBehavior::NO_ALERT_TRANSPORTS;
+$asb__info = AlertScheduleBehavior::INFORMATION_ONLY;
 ?>
 <div class="modal fade" id="device_maintenance_modal" tabindex="-1" role="dialog" aria-labelledby="device_edit" aria-hidden="true">
     <div class="modal-dialog">
@@ -78,9 +83,29 @@ foreach ($hour_steps as $hour) {
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="behavior" class="col-sm-4 control-label">Behavior: </label>
+                        <div class="col-sm-8">
+                            <select name='behavior' id='behavior' class='form-control input-sm'>
+                                <option value='<?= $asb__skip; ?>'><?= AlertScheduleBehavior::as_str($asb__skip); ?></option>
+                                <option value='<?= $asb__no_at; ?>'><?= AlertScheduleBehavior::as_str($asb__no_at); ?></option>
+                                <option value='<?= $asb__info; ?>'><?= AlertScheduleBehavior::as_str($asb__info); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="maintenance-submit" class="col-sm-4 control-label"></label>
                         <div class="col-sm-8">
-                            <button type="button" id="maintenance-submit" data-device_id="<?php echo $device['device_id']; ?>" <?php echo \LibreNMS\Alert\AlertUtil::isMaintenance($device['device_id']) ? 'disabled class="btn btn-warning"' : 'class="btn btn-success"'?> name="maintenance-submit">Start Maintenance</button>
+                            <button
+                             type="button"
+                             id="maintenance-submit"
+                             data-device_id="<?php echo $device['device_id']; ?>"
+                             <?php echo \LibreNMS\Alert\AlertUtil::isMaintenance($device['device_id'], AlertScheduleBehavior::ANY)
+                                    ? 'disabled class="btn btn-warning"'
+                                    : 'class="btn btn-success"'
+                             ?>
+                             name="maintenance-submit">
+                                Start Maintenance
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -96,6 +121,7 @@ foreach ($hour_steps as $hour) {
         var recurring = 0;
         var start = '<?=date('Y-m-d H:i:00'); ?>';
         var duration = $('#duration').val();
+        var behavior = $('#behavior').val();
         $.ajax({
             type: 'POST',
             url: 'ajax_form.php',
@@ -103,6 +129,7 @@ foreach ($hour_steps as $hour) {
                     sub_type: 'new-maintenance',
                     title: title,
                     notes: notes,
+                    behavior: behavior,
                     recurring: recurring,
                     start: start,
                     duration: duration,

@@ -29,6 +29,7 @@ namespace App\Http\Controllers\Table;
 use App\Models\AlertSchedule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use LibreNMS\Enum\AlertScheduleBehavior;
 
 class AlertScheduleController extends TableController
 {
@@ -56,6 +57,7 @@ class AlertScheduleController extends TableController
             'start' => 'start',
             'end' => 'end',
             'status' => DB::raw("end < '" . Carbon::now('UTC') . "'"), // only partition lapsed
+            'behavior' => 'behavior',
         ];
     }
 
@@ -68,6 +70,7 @@ class AlertScheduleController extends TableController
         return [
             'title' => htmlentities($schedule->title),
             'notes' => htmlentities($schedule->notes),
+            'behavior' => AlertScheduleBehavior::as_str($schedule->behavior, True), // use short value
             'id' => $schedule->schedule_id,
             'start' => $schedule->recurring ? '' : $schedule->start->toDateTimeString('minutes'),
             'end' => $schedule->recurring ? '' : $schedule->end->toDateTimeString('minutes'),

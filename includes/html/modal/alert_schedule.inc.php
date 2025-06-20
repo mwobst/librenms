@@ -12,7 +12,12 @@
  * the source code distribution for details.
  */
 
+use LibreNMS\Enum\AlertScheduleBehavior;
+
 if (\Auth::user()->hasGlobalAdmin()) {
+    $asb__skip = AlertScheduleBehavior::SKIP_ALERT_RULE_CHECKS;
+    $asb__no_at = AlertScheduleBehavior::NO_ALERT_TRANSPORTS;
+    $asb__info = AlertScheduleBehavior::INFORMATION_ONLY;
     ?>
 
 <div class="modal fade bs-example-modal-sm" id="schedule-maintenance" tabindex="-1" role="dialog" aria-labelledby="Create" aria-hidden="true">
@@ -109,6 +114,16 @@ if (\Auth::user()->hasGlobalAdmin()) {
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for='behavior' class='col-sm-4 control-label'>Behavior <exp>*</exp> </label>
+                        <div class="col-sm-8">
+                            <select id="behavior" name="behavior" class="form-control">
+                                <option value='<?= $asb__skip; ?>'><?= AlertScheduleBehavior::as_str($asb__skip); ?></option>
+                                <option value='<?= $asb__no_at; ?>'><?= AlertScheduleBehavior::as_str($asb__no_at); ?></option>
+                                <option value='<?= $asb__info; ?>'><?= AlertScheduleBehavior::as_str($asb__info); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                          <label for='maps' class='col-sm-4 control-label'>Map To <exp>*</exp> </label>
                         <div class="col-sm-8">
                             <select id="maps" name="maps[]" class="form-control" multiple="multiple"></select>
@@ -176,6 +191,7 @@ $('#schedule-maintenance').on('show.bs.modal', function (event) {
 
                 $('#title').val(output['title']);
                 $('#notes').val(output['notes']);
+                $('#behavior').find('option[value="'+output['behavior']+'"]').prop('selected', true);
                 if (output['recurring'] == 0){
                     var start = $('#start').data("DateTimePicker");
                     if (output['start']) {

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use LibreNMS\Enum\AlertScheduleBehavior;
 use LibreNMS\Exceptions\InvalidIpException;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\IPv4;
@@ -240,7 +241,7 @@ class Device extends BaseModel
         return '';
     }
 
-    public function isUnderMaintenance()
+    public function isUnderMaintenance($behavior = AlertScheduleBehavior::SKIP_ALERT_RULE_CHECKS)
     {
         if (! $this->device_id) {
             return false;
@@ -264,6 +265,10 @@ class Device extends BaseModel
                     });
                 }
             });
+
+            if ($behavior != AlertScheduleBehavior::ANY) {
+                $query = $query->where('behavior', $behavior);
+            }
 
         return $query->exists();
     }
